@@ -2,7 +2,11 @@ module github.com/arthurbaquit/hexagonal-arch
 
 go 1.18
 
-require github.com/stretchr/testify v1.8.0
+require (
+	github.com/gofrs/uuid v4.3.0+incompatible
+	github.com/golang/mock v1.6.0
+	github.com/stretchr/testify v1.8.0
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

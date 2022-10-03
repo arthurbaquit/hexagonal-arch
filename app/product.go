@@ -1,15 +1,39 @@
 package app
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/gofrs/uuid"
+)
 
 type ProductInterface interface {
-	isValid() (bool, error)
+	IsValid() (bool, error)
 	Enable() error
 	Disable() error
 	GetId() string
 	GetStatus() string
 	GetName() string
 	GetPrice() int64 // in decimals => 1000 = 10.00
+}
+
+type ProductServiceInterface interface {
+	Get(id string) (ProductInterface, error)
+	CreateProduct(name string, price int64) (ProductInterface, error)
+	EnableProduct(Product ProductInterface) (ProductInterface, error)
+	DisableProduct(Product ProductInterface) (ProductInterface, error)
+}
+
+type ProductReaderInterface interface {
+	Get(id string) (ProductInterface, error)
+}
+
+type ProductWriterInterface interface {
+	Save(product ProductInterface) (ProductInterface, error)
+}
+
+type ProductPersistenceInterface interface {
+	ProductReaderInterface
+	ProductWriterInterface
 }
 
 const (
@@ -22,6 +46,10 @@ type Product struct {
 	Status string `json:"status"`
 	Name   string `json:"name"`
 	Price  int64  `json:"price"`
+}
+
+func newProduct() *Product {
+	return &Product{Id: uuid.Must(uuid.NewV7()).String(), Status: ProductStatusDisabled}
 }
 
 func (p *Product) IsValid() (bool, error) {
